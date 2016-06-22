@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkflowProcess>
+    <Activities>
+        <Activity height="30" id="1" name="StartNode" type="START_NODE" width="80" xCoordinate="10" yCoordinate="10"/>
+        <Activity height="30" id="2" name="Set MO Details" type="NODE" width="80" xCoordinate="230" yCoordinate="85"/>
+        <Activity height="30" id="3" name="SendQuickTask" type="TASK_NODE" width="80" xCoordinate="450" yCoordinate="85"/>
+        <Activity height="30" id="4" name="ReturnQuickTask" type="TASK_NODE" width="80" xCoordinate="670" yCoordinate="85"/>
+        <Activity height="30" id="5" name="ResendQuickTask" type="TASK_NODE" width="80" xCoordinate="890" yCoordinate="85"/>
+        <Activity height="30" id="6" name="EndNode" type="END_NODE" width="80" xCoordinate="1110" yCoordinate="160"/>
+    </Activities>
+    <Transitions>
+        <Transition from="1" id="1000" name="" to="2"/>
+        <Transition from="2" id="1001" name="" to="3"/>
+        <Transition from="3" id="1002" name="Return Quick Task" to="4"/>
+        <Transition from="4" id="1003" name="End Quick Task" to="6"/>
+        <Transition from="4" id="1004" name="Resend Quick Task" to="5"/>
+        <Transition from="5" id="1005" name="Return Quick Task" to="4"/>
+    </Transitions>
+</WorkflowProcess>

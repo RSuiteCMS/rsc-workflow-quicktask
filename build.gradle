@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+apply from: 'http://ivy.reallysi.com/ivy-repo/rsuite-std-plugin-tasks.gradle'
+apply from: 'http://ivy.reallysi.com/ivy-repo/repositories-std-include.gradle'
+
+project.buildDir = 'target'
+group = 'rsi'
+
+configurations {
+	includeInJar {
+		transitive = false
+	}
+}
+
+dependencies {
+    compile('rsi:team-edition-plugin-utilities:1.0-qa043') {
+        transitive = false
+    }
+    includeInJar ("rsi:team-edition-plugin-utilities:1.0-qa043"){
+        transitive=false
+    }
+
+    /* RSI and RSuite common code */
+    compile('rsi:rsuite-api:4.0.+') {
+        transitive=false
+    }
+
+	compile ('rsi:rsuite-dev-plugin:3.7.0'){
+        transitive=false
+    }
+	compile ('rsi:rsi-utils:20100114'){
+        transitive=false
+    }
+	compile ('jboss:jbpm:rsuite-20090317'){
+        transitive=false
+    }
+
+	/*  Apache common code */
+	compile 'apache:commons-codec:1.3'
+	compile 'apache:commons-fileupload:1.2.1'
+	compile 'apache:commons-io:1.4'
+	compile 'apache:commons-lang:2.4'
+	compile 'apache:commons-logging:1.1.1'
+	compile 'apache:ant:1.7.1'
+
+	/*  Log4j related code */
+	compile ('log4j:log4j:1.2.15') { transitive=false }
+
+	configurations.compile.extendsFrom(configurations.includeInJar)
+	testCompile 'junit:junit:4.4'
+}
+
+jar () {
+	baseName='rsc-workflow-quicktask'
+	from configurations.includeInJar
+}
+
+task deploy() {
+  description "Deploys plugin to rsuite instance."
+  dependsOn deployLocal
+  doFirst {
+    println 'deploying plugin ' + project.name + ' to ' + rsuite_plugins
+  }
+}

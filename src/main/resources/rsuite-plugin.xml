@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rsuite-plugin id="@pluginId@" version="@pluginVersion@" timestamp="@timeStamp@" 
+description="Enables ad hoc routing of quick assignments from user to user without technical configuration. This version support RSuite 4.1.x.">
+	<!-- team-edition-workflow-quick -->
+	<lifecycleListener type="com.rsicms.community.quickTask.lifecycle.ManageWorkflows" />
+
+    <extensionProvider id="rsuite.WebService">
+		<staticWebService path="/WebContent" root="/@pluginId@"/>
+		<remoteApiDefinition id="@pluginId@:StartWorkflow"
+		                     handler="com.rsicms.community.quickTask.webservice.StartWorkflowWebService"
+		                     description="Start Workflow Web Service" />
+		<remoteApiDefinition id="@pluginId@:emailAttachments"
+		                     handler="com.rsicms.community.quickTask.webservice.EmailAttachmentWebService"
+		                     description=""/>
+		<remoteApiDefinition id="@pluginId@:QuickTaskAndEmail"
+		                     handler="com.rsicms.community.quickTask.webservice.QuickTaskAndEmailWebService"
+		                     description=""/>
+    </extensionProvider>
+
+	<extensionProvider id="rsuite.Workflow">
+    	<actionHandler type="com.rsicms.community.quickTask.actionhandler.AddCommentAction"
+    	               label="QuickTask - Add comment"/>
+        <actionHandler type="com.rsicms.community.quickTask.actionhandler.SetTaskDueDateActionHandler"
+                       label="QuickTask - Set Due Date"/>
+	</extensionProvider>
+
+    <extensionProvider id="rsuite.UI">
+        <styleInclude src="/@pluginId@/styles.less"/>
+    </extensionProvider>
+
+    <extensionProvider id="rsuite.Forms">
+      <datatypeDefinition 
+          name="rsuite:roles" 
+          label="Roles List" 
+          formControlType="select" baseType="string" 
+          description="Generate list of all roles">
+        <optionListProvider handler="com.rsicms.community.quickTask.datatype.RoleListProvider" />
+      </datatypeDefinition>
+
+      <formDefinition id="@pluginId@:form.startWorkflowWithEmail"
+                      description="Start Quick Task"
+                      label="Assign Quick Task"
+                      handler="com.rsicms.community.quickTask.formhandler.AdviseQtFormHandler"/>
+    </extensionProvider>
+
+    <extensionProvider id="rsuite.ContextMenu">
+        <contextMenuRuleSet name="@pluginId@:launchQuickTask">
+            <menuItemList>
+                <menuItem id="quickTask">
+                    <actionName>rsuite:invokeWebservice</actionName>
+                    <label>Assign quick task</label>
+                    <property name="rsuite:icon" value="workflow"/>
+                    <property name="formId" value="@pluginId@:form.startWorkflowWithEmail"/>
+                    <property name="remoteApiName" value="@pluginId@:QuickTaskAndEmail"/>
+                    <property name="formParams.roleNames" value="RSuiteUser"/>
+                    <property name="formParams.descriptionOptions" value="Review,Approve,Edit"/>
+                    <property name="rsuite:path" value="Workflow"/>
+                    <property name="rsuite:group" value="workflow"/>
+                </menuItem>
+            </menuItemList>
+            <ruleList>
+                <rule>nodeType ca,canode,mo,folder,mononxml</rule>
+                <rule>exclude role Contributor</rule>
+            </ruleList>
+        </contextMenuRuleSet>
+    </extensionProvider>
+
+
+</rsuite-plugin>

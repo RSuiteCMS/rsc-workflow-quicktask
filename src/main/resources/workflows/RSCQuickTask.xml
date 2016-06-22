@@ -1,0 +1,61 @@
+<process-definition xmlns="urn:jbpm.org:jpdl-3.1" name="RSCQuickTask">
+  <start-state name="StartNode">
+    <transition name="" to="Set MO Details" />
+  </start-state>
+  <node name="Set MO Details">
+    <action class="com.reallysi.rsuite.system.workflow.actions.SetVariablesFromMoDetails" />
+    <transition name="" to="SendQuickTask" />
+  </node>
+  <task-node name="SendQuickTask">
+    <task description="#{taskDescriptionFull}" name="Quick Task">
+      <event type="task-create">
+        <action class="com.reallysi.rsuite.system.workflow.actions.taskcreate.AssignTaskToUserFromVariable">
+          <actorNamingVariable>sendTo</actorNamingVariable>
+        </action>
+        <action class="com.rsicms.community.quickTask.actionhandler.SetTaskDueDateActionHandler">
+          <dueDate>${dtDue}</dueDate>
+        </action>          
+        <action class="com.rsicms.community.quickTask.actionhandler.AddCommentAction" />
+      </event>
+      <assignment pooled-actors="${sendToRole}" />
+      <controller class="com.reallysi.rsuite.system.workflow.RSuiteJbpmTaskControllerDelegation">
+        <variable access="read,write,required" name="rsuite contents" />
+      </controller>
+    </task>
+    <transition name="Return Quick Task" to="ReturnQuickTask" />
+  </task-node>
+  <task-node name="ReturnQuickTask">
+    <task description="#{taskDescriptionFull}" name="Quick Task Returned">
+      <event type="task-create">
+        <action class="com.reallysi.rsuite.system.workflow.actions.taskcreate.AssignTaskToUserFromVariable">
+          <actorNamingVariable>returnTo</actorNamingVariable>
+        </action>
+      </event>
+      <controller class="com.reallysi.rsuite.system.workflow.RSuiteJbpmTaskControllerDelegation">
+        <variable access="read,write,required" name="rsuite contents" />
+        <variable access="read,write" name="dtDue" />
+        <variable name="RSuiteOptions:dtDue:formControlType=datepicker;label=Complete By" access="read,write,required"/>
+      </controller>
+    </task>
+    <transition name="End Quick Task" to="EndNode" />
+    <transition name="Resend Quick Task" to="ResendQuickTask" />
+  </task-node>
+  <task-node name="ResendQuickTask">
+    <task description="#{taskDescriptionFull}" name="Quick Task (resent)">
+      <event type="task-create">
+        <action class="com.reallysi.rsuite.system.workflow.actions.taskcreate.AssignTaskToUserFromVariable">
+          <actorNamingVariable>sendTo</actorNamingVariable>
+        </action>
+        <action class="com.rsicms.community.quickTask.actionhandler.SetTaskDueDateActionHandler">
+          <dueDate>${dtDue}</dueDate>
+        </action>
+      </event>
+      <assignment pooled-actors="${sendToRole}" />
+      <controller class="com.reallysi.rsuite.system.workflow.RSuiteJbpmTaskControllerDelegation">
+        <variable access="read,write,required" name="rsuite contents" />
+      </controller>
+    </task>
+    <transition name="Return Quick Task" to="ReturnQuickTask" />
+  </task-node>
+  <end-state name="EndNode" />
+</process-definition>
