@@ -30,6 +30,9 @@
         <action class="com.reallysi.rsuite.system.workflow.actions.taskcreate.AssignTaskToUserFromVariable">
           <actorNamingVariable>returnTo</actorNamingVariable>
         </action>
+        <action class="com.rsicms.community.quickTask.actionhandler.SetTaskDueDateActionHandler">
+          <dueDate>${dtDue}</dueDate>
+        </action>
       </event>
       <controller class="com.reallysi.rsuite.system.workflow.RSuiteJbpmTaskControllerDelegation">
         <variable access="read,write,required" name="rsuite contents" />
