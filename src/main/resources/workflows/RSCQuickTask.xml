@@ -36,8 +36,6 @@
       </event>
       <controller class="com.reallysi.rsuite.system.workflow.RSuiteJbpmTaskControllerDelegation">
         <variable access="read,write,required" name="rsuite contents" />
-        <variable access="read,write" name="dtDue" />
-        <variable name="RSuiteOptions:dtDue:formControlType=datepicker;label=Complete By" access="read,write,required"/>
       </controller>
     </task>
     <transition name="End Quick Task" to="EndNode" />
